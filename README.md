@@ -11,7 +11,9 @@ To do this I have used the templates. Specifically, I have defined the most invo
 TO RUN MY CODE, you have just to clone my repository and write: 
 
 git clone git@github.com:Emiliaa02/Challenge-2.git
+
 make
+
 ./main
 
 
