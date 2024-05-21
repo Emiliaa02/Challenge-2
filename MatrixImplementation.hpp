@@ -5,6 +5,58 @@
 
 namespace algebra{
 
+//definition of the vector_mult operator
+       template<typename T, StorageOrder Order>
+       typename T::Vector_type vector_mult(Matrix<T,Order> A, const typename T::Vector_type& v){
+            static typename T::Scalar def_value;
+            typename T::Vector_type result(A.get_rows(), def_value);
+            //check of the compatibility of the sizes
+            if(A.m_cols != v.size()){
+                std::cerr<<"Invalid operation"<<std::endl;
+            }
+            //I have to distinguish the compressed and uncompressed cases
+            if(A.is_compressed()){
+                if(Order == StorageOrder::Row_Wise){
+                    for(std::size_t i=0; i<A.m_rows; ++i){
+                        typename T::Scalar sum = 0.0;
+                        for(std::size_t k=A.inner[i]; k<A.inner[i+1]; ++k){
+                            sum = sum + A.values[k] * v[A.outer[k]];
+                        }
+                        result[i]=sum;
+                    }
+                }
+                else{
+                    //check of the compatibility of the sizes
+                    if(A.m_cols != v.size()){
+                        std::cerr<<"Invalid operation"<<std::endl;
+                    }
+                    for(std::size_t j=0; j<A.m_cols; ++j){
+                        typename T::Scalar sum = 0.0;
+                        for(std::size_t k=A.inner[j]; k<A.inner[j+1]; ++k){
+                            sum = sum + A.values[k] * v[A.outer[k]];
+                        }
+                        result[j] = sum;
+                    }
+                }
+                return result;
+            }
+            //now I consider the uncompressed state both for rows and for columns
+            else{
+                if(Order == StorageOrder::Row_Wise){
+                    for(auto it=A.m_mat.begin(); it!=A.m_mat.end(); ++it){
+                        result[it->first[0]] += it->second*v[it->first[1]];
+                    }
+                    return result;
+                }
+                else{
+                    for(auto it=A.m_mat_c.begin(); it!=A.m_mat_c.end(); ++it){
+                        result[it->first[0]] += it->second*v[it->first[1]];
+                    }
+                    return result;
+                }
+            }
+        }
+
 //definition of the constructor
 template<typename T,StorageOrder Order>
 Matrix<T, Order>::Matrix(std::size_t rows, std::size_t columns){
@@ -231,7 +283,9 @@ typename T::Scalar& Matrix<T, Order>::operator()(std::size_t i, std::size_t j){
 					return values[k];
 				}
 			}
-			static typename T::Scalar def;
+            // you should initialize it or directly return 0
+            // (when the indices are not found but are in range)
+			static typename T::Scalar def(0);
 			return def;
 		}
 		else{
@@ -240,7 +294,7 @@ typename T::Scalar& Matrix<T, Order>::operator()(std::size_t i, std::size_t j){
 					return values[k];
 				}
 			}
-			static typename T::Scalar def;
+			static typename T::Scalar def(0);
 			return def;
 		}
 	}

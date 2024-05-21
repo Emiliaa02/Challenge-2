@@ -10,7 +10,7 @@ using namespace Timings;
 
 
 int main(){
-	//DOUBLE
+	/*//DOUBLE
 	//creation of an uncompressed matrix with a row-wise ordering
 	Matrix<T, StorageOrder::Row_Wise> mat_r(0,0);
 	//I read the matrix in the Matrix Market format
@@ -57,9 +57,9 @@ int main(){
 	chrono.stop();
 	//print the time
 	std::cout<<"Time for the COMPRESSED MATRIX - COLUMN-WISE"<<std::endl;
-	std::cout<<chrono<<std::endl;
+	std::cout<<chrono<<std::endl;*/
 
-	/*CHECK THAT THE FUNCTIONS ARE GOOD ALSO FOR THE COMPLEX NUMBERS
+	//CHECK THAT THE FUNCTIONS ARE GOOD ALSO FOR THE COMPLEX NUMBERS
 	
 	Matrix<T, StorageOrder::Row_Wise> mat_r(2,2);
 	mat_r(0,0)=std::complex<double>(1.0,1.0);
@@ -83,6 +83,10 @@ int main(){
 	mat_c(1,0)=std::complex<double>(1.0,1.0);
 	mat_c(1,1)=std::complex<double>(1.0,1.0);
 
+    // using call const operator - not working
+/*    const Matrix<T, StorageOrder::Column_Wise> mat_c_const(mat_c);
+    std::cout << "element (0,1) of the complex matrix: " << mat_c_const(0,1) << std::endl; */
+
 	typename T::Vector_type result2;
 	chrono.start();
 	result2 = vector_mult(mat_r, v);
@@ -105,7 +109,7 @@ int main(){
 	chrono.stop();
 	std::cout<<"Time for the COMPRESSED MATRIX - COLUMN-WISE"<<std::endl;
 	std::cout<<chrono<<std::endl;
-	*/
+	
 	
 	return 0;
 }

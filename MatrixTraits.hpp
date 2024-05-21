@@ -23,8 +23,8 @@ struct Comparisonbycolumns{
 //I have implemented a class MatrixTraits to define the common types to use in my code
 class MatrixTraits{
 public:
-	using Scalar = double; //to comment if you want to use the complex numbers
-	//using Scalar = std::complex<double>; //to uncomment if you want to use the complex numbers
+	//using Scalar = double; //to comment if you want to use the complex numbers
+	using Scalar = std::complex<double>; //to uncomment if you want to use the complex numbers
 	using Matrix_type = std::map<std::array<std::size_t, 2>, Scalar>;
 	using Matrix_type_c = std::map<std::array<std::size_t, 2>, Scalar,Comparisonbycolumns>;
 	using Vector_type = std::vector<Scalar>;

@@ -10,6 +10,14 @@ namespace algebra{
 		Column_Wise
 	};
 
+    // Declaration of the class Matrix
+	template<typename T, StorageOrder Order>
+	class Matrix;
+
+    //Declaration of the vector_mult operator
+    template<typename T, StorageOrder Order>
+    typename T::Vector_type vector_mult(Matrix<T,Order> A, const typename T::Vector_type& v);
+
 	template<typename T, StorageOrder Order>
 	class Matrix{
 	public:
@@ -31,56 +39,7 @@ namespace algebra{
 		//multipication between two matrices
 		typename T::Matrix_type& matrix_mult(const typename T::Matrix_type& A, const typename T::Matrix_type& B);
 		//declaration of the friend function for the product between a matrix and a vector
-		friend typename T::Vector_type vector_mult(Matrix<T,Order> A, const typename T::Vector_type& v){
-			static typename T::Scalar def_value;
-			typename T::Vector_type result(A.get_rows(), def_value);
-			//check of the compatibility of the sizes
-			if(A.m_cols != v.size()){
-				std::cerr<<"Invalid operation"<<std::endl;
-			}
-			//I have to distinguish the compressed and uncompressed cases
-			if(A.is_compressed()){
-				if(Order == StorageOrder::Row_Wise){
-					for(std::size_t i=0; i<A.m_rows; ++i){
-						typename T::Scalar sum = 0.0;
-						for(std::size_t k=A.inner[i]; k<A.inner[i+1]; ++k){
-							sum = sum + A.values[k] * v[A.outer[k]];
-						}
-						result[i]=sum;
-					}
-				}
-				else{
-					//check of the compatibility of the sizes
-					if(A.m_cols != v.size()){
-						std::cerr<<"Invalid operation"<<std::endl;
-					}
-					for(std::size_t j=0; j<A.m_cols; ++j){
-						typename T::Scalar sum = 0.0;
-						for(std::size_t k=A.inner[j]; k<A.inner[j+1]; ++k){
-							sum = sum + A.values[k] * v[A.outer[k]];
-						}
-						result[j] = sum;
-					}
-				}
-				return result;
-			}
-			//now I consider the uncompressed state both for rows and for columns
-			else{
-				if(Order == StorageOrder::Row_Wise){
-					for(auto it=A.m_mat.begin(); it!=A.m_mat.end(); ++it){
-						result[it->first[0]] += it->second*v[it->first[1]];
-					}
-					return result;
-				}
-				else{
-					for(auto it=A.m_mat_c.begin(); it!=A.m_mat_c.end(); ++it){
-						result[it->first[0]] += it->second*v[it->first[1]];
-					}
-					return result;
-				}
-			}
-		}
-		//reader of the matrices in the matrix market format
+		friend typename T::Vector_type vector_mult<T, Order>(Matrix<T,Order> A, const typename T::Vector_type& v);		//reader of the matrices in the matrix market format
 		void reader_matrices(const std::string& filename);
 		//getter
 		std::size_t get_rows(){

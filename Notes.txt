@@ -1,0 +1,13 @@
+- README is clear
+
+- you should not leave part of the tests commented in the code.
+    Put the two tests in separate files in a test foalder instead.
+- the user should not have to uncomment lines in your code or add libraries, for instance in MatrixTraits.hpp, in order to use complex numbers.
+    This is the reason why you use a template for the type T.
+
+- the operations that are not allowed in compressed form should print a warning when called in this case.
+- instead of defining two types of maps for the row and column wise storage you could define a comparison operator that works differently according to the case.
+
+- friend operator should be defined outside of the class.
+
+- const call operator does not work.
